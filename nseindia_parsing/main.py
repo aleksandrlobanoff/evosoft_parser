@@ -2,6 +2,7 @@ import time
 
 from nseindia_parsing.utils.csvwriter import CSVWriter
 from nseindia_parsing.utils.datascraper import DataScraper
+from nseindia_parsing.utils.user_script import simulate_user_script
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
 
             if scraper.symbol_data and scraper.price_data:  # Если есть данные для записи
                 writer.write_to_csv(scraper.symbol_data, scraper.price_data)  # Записываем данные в файл CSV
-                print("Операция завершена успешно")
+                print("Данные записаны в CSV файл успешно")
                 break  # Прекращаем выполнение цикла
             else:
                 print("Запрашиваемые данные не найдены на странице. Повторная попытка...")
@@ -38,3 +39,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+    print('Выполняется пользовательский сценарий')
+    simulate_user_script()
+    print('Программа завершена!')
