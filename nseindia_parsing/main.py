@@ -1,7 +1,7 @@
 import time
 
-from utils.csvwriter import CSVWriter
-from utils.datascraper import DataScraper
+from nseindia_parsing.utils.csvwriter import CSVWriter
+from nseindia_parsing.utils.datascraper import DataScraper
 
 
 def main():
