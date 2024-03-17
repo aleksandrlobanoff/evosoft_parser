@@ -1,8 +1,8 @@
 import time
 
-from nseindia_parsing.utils.csvwriter import CSVWriter
-from nseindia_parsing.utils.datascraper import DataScraper
-from nseindia_parsing.utils.user_script import simulate_user_script
+from apps.nseindia_parsing.utils.csvwriter import CSVWriter
+from apps.nseindia_parsing.utils.datascraper import DataScraper
+from apps.nseindia_parsing.utils.user_script import simulate_user_script
 
 
 def main():
