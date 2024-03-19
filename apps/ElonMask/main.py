@@ -1,42 +1,26 @@
-from selenium.webdriver.common.by import By
-import logging
-from selenium.webdriver import Chrome, ChromeOptions
-from apps.ElonMask.utils import setup_logger, rss_app
+import requests
+from bs4 import BeautifulSoup
 
 
-def main(browser):
-    # Функция для работы со страницей постов Илона
-    posts = []
-    # Делаем scroll на странице, пока нам не будут доступны минимум 10 постов
-    while len(posts) < 10:
-        # Делаем Scroll
-        browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        # Обновляем список постов
-        posts = browser.find_elements(By.XPATH,
-                                      '//a[@class="MuiTypography-root MuiTypography-h3 tss-1h8hsy-FeedCardOverview-title mui-1ti1707-Typography-fontWeightBold"]')
+def get_last_10_tweets():
+    url = "https://twitter.com/elonmask"
 
-    # Обход 10 последних постов и сохранение текста в лог-файл
-    for num, post in enumerate(posts[:10], 1):
-        text = post.text
-        # Логирование текста поста
-        logging.info(f'Пост #{num}:\n\t{text if text else "Текст отсутствует"}\n')
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82"
+    }
 
-        # Получаем ссылки на аккаунты авторов последних 3 комментариев
-        comments = post.find_elements(By.XPATH, './/div[contains(@class, "tss-0emlzn-Comment-content")]')
-        author_links = [comment.find_element(By.XPATH, './a').get_attribute('href') for comment in comments[-3:]]
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.content, "html.parser")
+    tweets = []
 
-        # Логирование ссылок на аккаунты авторов комментариев
-        for link in author_links:
-            logging.info(f'\tСсылка на автора комментария: {link}\n')
+    tweet_elements = soup.find_all("span", {"class": "css-1qaijid r-bcqeeo r-qvutc0 r-poiln3"})
+    for tweet in tweet_elements[:10]:
+        tweet_text = tweet.get_text(strip=True)
+        tweets.append(tweet_text)
+
+    return tweets
 
 
-if __name__ == '__main__':
-    setup_logger()
-    options = ChromeOptions()
-
-    options.add_argument("--disable-gpu")
-
-    with Chrome(options=options) as browser:
-        user_url = 'https://twitter.com/elonmusk'
-        new_browser = rss_app(browser, user_url)
-        main(browser)
+tweets = get_last_10_tweets()
+for tweet in tweets:
+    print(tweet)
